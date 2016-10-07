@@ -25,112 +25,30 @@ namespace Photobooth.App
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private Gamepad _Gamepad = null;
-
         public MainPage()
         {
             this.InitializeComponent();
+            GamepadListener gpListener = new GamepadListener(this, Dispatcher);
+            GamepadListener.ButtonPressed += GamepadListener_ButtonPressed;
         }
 
-        private async void btnConnect_Click(object sender,
-                                               RoutedEventArgs e)
+        private void GamepadListener_ButtonPressed(object sender, ButtonEventArgs e)
         {
-            Gamepad.GamepadAdded += Gamepad_GamepadAdded;
-            Gamepad.GamepadRemoved += Gamepad_GamepadRemoved;
+            tbGamepadButton.Text = $"Bouton {e.ButtonName}";
+        }
 
-            while (true)
+        public void changeGamepadStatus(bool isGamepadOn)
+        {
+            if (isGamepadOn)
             {
-                await Dispatcher.RunAsync(
-                           CoreDispatcherPriority.Normal, () =>
-                           {
-                               if (_Gamepad == null)
-                               {
-                                   return;
-                               }
-
-                     // Get the current state
-                     var reading = _Gamepad.GetCurrentReading();
-
-                               tbLeftTrigger.Text =
-                       reading.LeftTrigger.ToString();
-                               tbRightTrigger.Text =
-                       reading.RightTrigger.ToString();
-                               tbLeftThumbstickX.Text =
-                       reading.LeftThumbstickX.ToString();
-                               tbLeftThumbstickY.Text =
-                       reading.LeftThumbstickY.ToString();
-                               tbRightThumbstickX.Text =
-                       reading.RightThumbstickX.ToString();
-                               tbRightThumbstickY.Text =
-                        reading.RightThumbstickY.ToString();
-                               tbButtons.Text = string.Empty;
-                               tbButtons.Text +=
-                      (reading.Buttons & GamepadButtons.A)
-                         == GamepadButtons.A ? "A " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.B)
-                         == GamepadButtons.B ? "B " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.X)
-                         == GamepadButtons.X ? "X " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.Y)
-                         == GamepadButtons.Y ? "Y " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.LeftShoulder) ==
-                         GamepadButtons.LeftShoulder
-                           ? "LeftShoulder " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.RightShoulder) ==
-                         GamepadButtons.RightShoulder
-                           ? "RightShoulder " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.LeftThumbstick) ==
-                         GamepadButtons.LeftThumbstick
-                           ? "LeftThumbstick " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.RightThumbstick) == GamepadButtons.RightThumbstick
-                           ? "RightThumbstick " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.DPadLeft) ==
-                         GamepadButtons.DPadLeft ? "DPadLeft " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.DPadRight) ==
-                         GamepadButtons.DPadRight ? "DPadRight " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.DPadUp) ==
-                         GamepadButtons.DPadUp ? "DPadUp " : "";
-                               tbButtons.Text +=
-                       (reading.Buttons & GamepadButtons.DPadDown) ==
-                         GamepadButtons.DPadDown ? "DPadDown " : "";
-                           });
-
-                await Task.Delay(TimeSpan.FromMilliseconds(5));
+                tbGamepadOn.Visibility = Visibility.Visible;
+                tbGamepadOff.Visibility = Visibility.Collapsed;
             }
-        }
-
-        private async void Gamepad_GamepadRemoved(object sender,
-                                                  Gamepad e)
-        {
-            _Gamepad = null;
-
-            await Dispatcher.RunAsync(
-                               CoreDispatcherPriority.Normal, () =>
-                               {
-                                   tbConnected.Text = "Controller removed";
-                               });
-        }
-
-        private async void Gamepad_GamepadAdded(object sender,
-                                                Gamepad e)
-        {
-            _Gamepad = e;
-
-            await Dispatcher.RunAsync(
-                         CoreDispatcherPriority.Normal, () =>
-                         {
-                             tbConnected.Text = "Controller added";
-                         });
+            else
+            {
+                tbGamepadOn.Visibility = Visibility.Collapsed;
+                tbGamepadOff.Visibility = Visibility.Visible;
+            }
         }
     }
 }
