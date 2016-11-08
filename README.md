@@ -10,4 +10,8 @@ My first intention is to use :
 - an old 17' vga monitor
 and many motivation!
 
-Maybe this can help someone one day...
+Notes :
+Project stopped at this time.
+But the motivation is not dead :
+It was easier to go with python on raspberry, but C# and mono could do the job too.
+I keep these files because it contains code to catch xbox one buttons press events on W10 IOT.
